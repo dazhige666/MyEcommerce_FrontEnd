@@ -1,14 +1,21 @@
 <template>
   <div id="app">
-    <nav>
-      <router-link to="/">Home</router-link> |
-      <router-link to="/about">About</router-link>
-    </nav>
+
+
+<!--    <nav>-->
+<!--&lt;!&ndash;      <router-link to="/">Home</router-link> |&ndash;&gt;-->
+<!--&lt;!&ndash;      <router-link to="/about">About</router-link>&ndash;&gt;-->
+<!--    </nav>-->
+
     <router-view/>
   </div>
 </template>
 
 <style>
+*{
+  padding: 0;
+  margin: 0;
+}
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
