@@ -163,7 +163,9 @@ export default {
         email:this.form.email,
         phone:this.form.phone,
       }).then((e) => {
-        e.data.code = 600? location.reload():this.$message.error(e.data.message)
+        e.data.code === 600?
+            location.reload()
+            :this.$message.error(e.data.message)
       })
       this.form = {
         id: '0',

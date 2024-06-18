@@ -4,10 +4,16 @@ import HomeView from '../views/HomeView.vue'
 import UserView from '../views/UserView.vue'
 import MenuVue from '../components/MenuVue.vue'
 import userView from "@/views/UserView.vue";
+import LoginVue from "@/components/LoginVue.vue";
 
 Vue.use(VueRouter)
 
 const routes = [
+  {
+    path:'/Login',
+    name:'Login',
+    component: LoginVue
+  },
   {
     path: '/',
     name: 'home',
