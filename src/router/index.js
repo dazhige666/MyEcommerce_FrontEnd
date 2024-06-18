@@ -49,4 +49,26 @@ const router = new VueRouter({
   routes
 })
 
+//定义白名单，不需要拦截的页面
+var whiteList = ["/login"]
+router.beforeEach((to, from, next) => {
+  if(whiteList.includes(to.path)){
+    next() //向后放行
+  }else{
+    let username = window.localStorage.getItem("username");
+    if(username==null||username==""||username==undefined){
+      next({path:"/login"})
+    }
+    else next()
+  }
+
+
+  // if (to.name !== 'Login' && !isAuthenticated) next({ name: 'Login' })
+  // else next()
+  console.log(to);
+  console.log(from);
+
+})
+
+
 export default router
