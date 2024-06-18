@@ -42,7 +42,7 @@ export default {
     submitForm(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
-          alert('submit!');
+          //alert('submit!');
 
           axios.post('back/login', {
             username: this.ruleForm.username,
@@ -53,6 +53,9 @@ export default {
             if(e.data.code==600){
               this.$router.push('/menu');
               this.$message.success(e.data.message);
+              window.localStorage.setItem("username",e.data.data);
+              //向后台发起请求时，检验用户是否登录，没有需要跳转到登录页面进行登录
+              //同时检验用户是否是管理员账户，不是的话，弹出提示，无权限修改
             }
             else{
               console.log('error submit!!');
