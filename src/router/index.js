@@ -3,8 +3,8 @@ import VueRouter from 'vue-router'
 import HomeView from '../views/HomeView.vue'
 import UserView from '../views/UserView.vue'
 import MenuVue from '../components/MenuVue.vue'
-import userView from "@/views/UserView.vue";
 import LoginVue from "@/components/LoginVue.vue";
+import CateView from "@/views/CateView.vue";
 
 Vue.use(VueRouter)
 
@@ -29,6 +29,11 @@ const routes = [
         name: 'userList',
         component: UserView,
 
+      },
+      {
+        path: "cateList",
+        name: "cateList",
+        component: CateView,
       }
     ]
   },
@@ -52,6 +57,18 @@ const router = new VueRouter({
 //定义白名单，不需要拦截的页面
 var whiteList = ["/login"]
 router.beforeEach((to, from, next) => {
+
+  // let ss = []
+  // for(let i of routes ){
+  //   console.log(to.path)
+  //   ss.push(i.path)
+  // }
+  // if(ss.includes(to.path)||to.path.includes("/back")){
+  //   next()
+  // }
+  // else  next({path:"/login"})
+  //为什么会栈溢出呢？
+
   if(whiteList.includes(to.path)){
     next() //向后放行
   }else{

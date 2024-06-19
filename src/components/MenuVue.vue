@@ -3,10 +3,38 @@ export default {
   data() {
     return {
       username: window.localStorage.getItem('username'),
+      msgVisible: false,
+      passVisible: false,
+      displayUser: {}
     }
   },
   methods: {
     handleCommand(command) {
+
+      if(command === 'msg') {
+        console.log(this.username)
+        //展示个人信息
+        //用当前用户名与子组件表单进行匹配
+        axios.get("/back/user",{
+          params:{
+            username:this.username,
+          }
+        }).then(e => {
+          console.log(e.data.data.records[0]);
+          this.displayUser= e.data.data.records[0];
+          this.msgVisible = true;
+        })
+        }
+      else if (command === 'pass') {
+
+        //对话框嵌表单，后端发请求校验密码是否相同
+        //修改密码
+        //未实现
+      }
+      else if (command === 'lout') {
+        window.localStorage.removeItem("username")
+        this.$router.push('/login').catch()
+      }
       this.$message('click on item ' + command);
     }
 
@@ -24,47 +52,22 @@ export default {
             <el-menu-item index="1-1"><router-link style="color: #eeeeee;text-decoration: none" to="/menu/userList">用户操作</router-link></el-menu-item>
           </el-menu-item-group>
         </el-submenu>
-<!--        <el-submenu index="2">-->
-<!--          <template slot="title"><i class="el-icon-menu"></i>导航二</template>-->
-<!--          <el-menu-item-group>-->
-<!--            <template slot="title">分组一</template>-->
-<!--            <el-menu-item index="2-1">选项1</el-menu-item>-->
-<!--            <el-menu-item index="2-2">选项2</el-menu-item>-->
-<!--          </el-menu-item-group>-->
-<!--          <el-menu-item-group title="分组2">-->
-<!--            <el-menu-item index="2-3">选项3</el-menu-item>-->
-<!--          </el-menu-item-group>-->
-<!--          <el-submenu index="2-4">-->
-<!--            <template slot="title">选项4</template>-->
-<!--            <el-menu-item index="2-4-1">选项4-1</el-menu-item>-->
-<!--          </el-submenu>-->
-<!--        </el-submenu>-->
-<!--        <el-submenu index="3">-->
-<!--          <template slot="title"><i class="el-icon-setting"></i>导航三</template>-->
-<!--          <el-menu-item-group>-->
-<!--            <template slot="title">分组一</template>-->
-<!--            <el-menu-item index="3-1">选项1</el-menu-item>-->
-<!--            <el-menu-item index="3-2">选项2</el-menu-item>-->
-<!--          </el-menu-item-group>-->
-<!--          <el-menu-item-group title="分组2">-->
-<!--            <el-menu-item index="3-3">选项3</el-menu-item>-->
-<!--          </el-menu-item-group>-->
-<!--          <el-submenu index="3-4">-->
-<!--            <template slot="title">选项4</template>-->
-<!--            <el-menu-item index="3-4-1">选项4-1</el-menu-item>-->
-<!--          </el-submenu>-->
-<!--        </el-submenu>-->
+        <el-submenu index="2">
+          <template slot="title"><i class="el-icon-message"></i>品类功能</template>
+          <el-menu-item-group>
+            <el-menu-item index="1-1"><router-link style="color: #eeeeee;text-decoration: none" to="/menu/cateList">品类操作</router-link></el-menu-item>
+          </el-menu-item-group>
+        </el-submenu>
       </el-menu>
     </el-aside>
-
     <el-container>
       <el-header style="text-align: right; font-size: 12px">
         <el-dropdown @command="handleCommand">
           <i class="el-icon-setting" style="margin-right: 15px"></i>
           <el-dropdown-menu slot="dropdown">
-            <el-dropdown-item command="a">账户信息</el-dropdown-item>
-            <el-dropdown-item command="b">修改密码</el-dropdown-item>
-            <el-dropdown-item command="c">注销账户</el-dropdown-item>
+            <el-dropdown-item command="msg">账户信息</el-dropdown-item>
+            <el-dropdown-item command="pass">修改密码</el-dropdown-item>
+            <el-dropdown-item command="lout">注销账户</el-dropdown-item>
 
           </el-dropdown-menu>
         </el-dropdown>
@@ -76,7 +79,28 @@ export default {
 
       </el-main>
     </el-container>
+    <el-dialog  title="用户详细信息" :visible.sync="msgVisible">
+      <el-descriptions title="用户列表" direction="vertical" :column="4" border>
+        <el-descriptions-item label="ID">{{displayUser.id}}</el-descriptions-item>
+        <el-descriptions-item label="用户名">{{displayUser.username}}</el-descriptions-item>
+        <el-descriptions-item label="密码">{{displayUser.password}}</el-descriptions-item>
+        <el-descriptions-item label="邮箱" span="2">{{displayUser.email}}</el-descriptions-item>
+        <el-descriptions-item label="手机号">{{displayUser.phone}}</el-descriptions-item>
+        <el-descriptions-item label="角色">{{displayUser.role}}</el-descriptions-item>
+        <el-descriptions-item label="状态">
+          <el-switch
+              v-model = "displayUser.status"
+              inactive-color="#ff4949"
+              active-color="#13ce66"
+              disabled>
+          </el-switch>
+        </el-descriptions-item>
+        <el-descriptions-item label="创建时间" span="2">{{displayUser.createTime}}</el-descriptions-item>
+        <el-descriptions-item label="修改时间">{{displayUser.updateTime}}</el-descriptions-item>
+      </el-descriptions>
+    </el-dialog>
   </el-container>
+
 </template>
 <style>
 .el-header {

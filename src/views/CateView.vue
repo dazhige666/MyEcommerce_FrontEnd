@@ -1,15 +1,14 @@
 <script >
 export default {
-  name: "UserView",
+  name: "CateView",
   watch: {
     pageNumber(new1,old){
-      axios.get("/back/user",{
+      axios.get("/back/cate",{
         params: {
           pageNumber: new1,
           pageSize: this.pageSize,
-          username:this.user.username,
-          roleName:this.user.roleName,
-          status:this.user.status
+          name:this.category.name,
+          status:this.category.status,
 
         }
       }).then((e) => {
@@ -42,7 +41,7 @@ export default {
     },
     changeStatus(s){
       console.log(s)
-      axios.get("/back/updateUserStatus",{
+      axios.get("/back/updateCateStatus",{
         params:{
           id:s.row.id,
           status:s.row.status,
@@ -64,7 +63,7 @@ export default {
     },
     handleClick(row) {
       this.dialogTableVisible = true;
-      this.displayUser = row
+      this.displayCategory = row
 
       //查看，显示详细信息
       console.log(row);
@@ -77,12 +76,11 @@ export default {
 
     },
     onSubmit() {
-      console.log(this.user);
-      axios.get("/back/user",{
+      console.log(this.category);
+      axios.get("/back/cate",{
         params:{
-          username:this.user.username,
-          roleName:this.user.roleName,
-          status:this.user.status,
+          name:this.category.name,
+          status:this.category.status,
           pageNumber: this.pageNumber,
           pageSize: this.pageSize,
         }
@@ -96,32 +94,16 @@ export default {
     },
     pageChange(e){
       this.pageNumber = e
-      //console.log(e)
-      // axios.get("/back/user",{
-      //   params: {
-      //     pageNumber: this.pageNumber,
-      //     pageSize: this.pageSize,
-      //     username:this.user.username,
-      //     roleName:this.user.roleName,
-      //     status:this.user.status,
-      //   }
-      // }).then((e) => {
-      //   console.log(e);
-      //   this.total = e.data.data.total;
-      //   this.tableData = (e.data.data.records);
-      //
-      // })
     },
     sizeChange(e){
       this.pageSize = e
       console.log(e)
-      axios.get("/back/user",{
+      axios.get("/back/cate",{
         params: {
           pageNumber: this.pageNumber,
           pageSize: this.pageSize,
-          username:this.user.username,
-          roleName:this.user.roleName,
-          status:this.user.status,
+          name:this.category.name,
+          status:this.category.status,
         }
       }).then((e) => {
         console.log(e);
@@ -130,10 +112,10 @@ export default {
 
       })
     },
-    checkUsername(){
-      axios.get("/back/checkUsername",{
+    checkCateName(){
+      axios.get("/back/checkCateName",{
         params:{
-          username:this.form.username,
+          name:this.form.name,
           id:this.form.id
         }
       }).then((e) => {
@@ -156,12 +138,10 @@ export default {
     },
     edit(){
       this.dialogFormVisible = false;
-      axios.post("/back/edit",{
+      axios.post("/back/cateEdit",{
         id:this.form.id,
-        username:this.form.username,
-        password:this.form.password,
-        email:this.form.email,
-        phone:this.form.phone,
+        name:this.form.name,
+        parentName:this.form.parentName,
       }).then((e) => {
         e.data.code === 600?
             location.reload()
@@ -169,11 +149,8 @@ export default {
       })
       this.form = {
         id: '0',
-        username: '',
-        password: '',
-        phone: '',
-        email: '',
-        roleName: '',
+        name: '',
+        parentName: '',
         status: [],
         createTime: '',
         updateTime: ''
@@ -195,13 +172,12 @@ export default {
 
   },
   created() {
-    axios.get("/back/user",{
+    axios.get("/back/cate",{
       params: {
         pageNumber: this.pageNumber,
         pageSize: this.pageSize,
-        username:this.user.username,
-        roleName:this.user.roleName,
-        status:this.user.status
+        name:this.category.name,
+        status:this.category.status
 
       }
     }).then((e) => {
@@ -218,21 +194,17 @@ export default {
       total:-1,
       pageSize:8,
       tableData: [],
-      user: {
-        username: '',
+      category: {
+        name: '',
         status: '',
-        roleName:''
       },
       dialogTableVisible: false,
       dialogFormVisible: false,
-      displayUser : {},
+      displayCategory : {},
       form: {
         id: '0',
-        username: '',
-        password: '',
-        phone: '',
-        email: '',
-        roleName: '',
+        name: '',
+        parentName: '',
         status: [],
         createTime: '',
         updateTime: ''
@@ -246,30 +218,18 @@ export default {
 <template>
   <div>
     <el-row>
-      <el-form :inline="true" :model="user" class="demo-form-inline">
-        <el-form-item label="用户名">
-          <el-input v-model="user.username" clearable placeholder="输入用户名查询"></el-input>
+      <el-form :inline="true" :model="category" class="demo-form-inline">
+        <el-form-item label="类别名">
+          <el-input v-model="category.name" clearable placeholder="输入用户名查询"></el-input>
         </el-form-item>
-        <el-form-item label="用户状态">
-          <el-select v-model="user.status" clearable placeholder="用户状态">
-<!--            <el-option label="请选择数据状态" value="1"></el-option>-->
+        <el-form-item label="类别状态">
+          <el-select v-model="category.status" clearable placeholder="用户状态">
+            <!--            <el-option label="请选择数据状态" value="1"></el-option>-->
             <el-option label="有效" value="1"></el-option>
             <el-option label="无效" value="0"></el-option>
           </el-select>
 
         </el-form-item>
-
-        <el-form-item label="用户角色">
-          <el-select v-model="user.roleName" clearable placeholder="用户角色">
-            <!--            <el-option label="请选择数据状态" value="1"></el-option>-->
-            <el-option label="卖家" value="1"></el-option>
-            <el-option label="买家" value="0"></el-option>
-            <el-option label="管理员" value="2"></el-option>
-
-          </el-select>
-
-        </el-form-item>
-
         <el-form-item>
           <el-button type="primary" @click="onSubmit" class="el-icon-search" > 查询</el-button>
           <el-button type="primary" @click="add" class="el-icon-circle-plus-outline"> 添加</el-button>
@@ -284,40 +244,24 @@ export default {
       <el-table-column
           prop="id"
           label="id"
-          width="50">
-      </el-table-column>
-      <el-table-column
-          prop="username"
-          label="用户名"
           width="100">
       </el-table-column>
       <el-table-column
-          prop="password"
-          label="密码"
-          width="140">
+          prop="name"
+          label="类别名"
+          width="180">
       </el-table-column>
       <el-table-column
-          prop="email"
-          label="邮箱"
-          width="220">
-      </el-table-column>
-      <el-table-column
-          prop="phone"
-          label="电话"
-          width="160">
-      </el-table-column>
-      <el-table-column
-          prop="role"
-          label="用户组"
-          width="120">
+          prop="parentName"
+          label="父级列表"
+          width="150">
       </el-table-column>
       <el-table-column
           label="当前状态"
-          width="100">
+          width="150">
         <template slot-scope="scope">
           <el-switch
               v-model="scope.row.status"
-              v-if="scope.row.role!=='管理员'"
               @change="changeStatus(scope)"
               active-color="#13ce66"
               inactive-color="#ff4949">
@@ -344,24 +288,22 @@ export default {
         </template>
       </el-table-column>
     </el-table>
-    <el-dialog  title="用户详细信息" :visible.sync="dialogTableVisible">
+    <el-dialog  title="类别详细信息" :visible.sync="dialogTableVisible">
       <el-descriptions title="用户列表" direction="vertical" :column="4" border>
-        <el-descriptions-item label="ID">{{displayUser.id}}</el-descriptions-item>
-        <el-descriptions-item label="用户名">{{displayUser.username}}</el-descriptions-item>
-        <el-descriptions-item label="密码">{{displayUser.password}}</el-descriptions-item>
-        <el-descriptions-item label="邮箱" span="2">{{displayUser.email}}</el-descriptions-item>
-        <el-descriptions-item label="手机号">{{displayUser.phone}}</el-descriptions-item>
-        <el-descriptions-item label="角色">{{displayUser.role}}</el-descriptions-item>
+        <el-descriptions-item label="ID">{{displayCategory.id}}</el-descriptions-item>
+        <el-descriptions-item label="类别名">{{displayCategory.name}}</el-descriptions-item>
+        <el-descriptions-item label="父级品类">{{displayCategory.parentName}}</el-descriptions-item>
+
         <el-descriptions-item label="状态">
           <el-switch
-              v-model = "displayUser.status"
+              v-model = "displayCategory.status"
               inactive-color="#ff4949"
               active-color="#13ce66"
               disabled>
           </el-switch>
         </el-descriptions-item>
-        <el-descriptions-item label="创建时间" span="2">{{displayUser.createTime}}</el-descriptions-item>
-        <el-descriptions-item label="修改时间">{{displayUser.updateTime}}</el-descriptions-item>
+        <el-descriptions-item label="创建时间" span="2">{{displayCategory.createTime}}</el-descriptions-item>
+        <el-descriptions-item label="修改时间">{{displayCategory.updateTime}}</el-descriptions-item>
 
 
 
@@ -373,24 +315,12 @@ export default {
         <el-form-item label="ID" :label-width="formLabelWidth">
           <el-input v-model="form.id" disabled autocomplete="off"></el-input>
         </el-form-item>
-        <el-form-item label="用户名" :label-width="formLabelWidth">
-          <el-input v-model="form.username" @blur="checkUsername" autocomplete="off"></el-input>
+        <el-form-item label="类别名" :label-width="formLabelWidth">
+          <el-input v-model="form.name" @blur="checkCateName" autocomplete="off"></el-input>
         </el-form-item>
-        <el-form-item label="密码" :label-width="formLabelWidth">
-          <el-input v-model="form.password" autocomplete="off"></el-input>
-        </el-form-item>
-        <el-form-item label="手机号" :label-width="formLabelWidth">
-          <el-input v-model="form.phone" autocomplete="off"></el-input>
-        </el-form-item>
-        <el-form-item label="邮箱" :label-width="formLabelWidth">
-          <el-input v-model="form.email" autocomplete="off"></el-input>
-        </el-form-item>
-<!--        <el-form-item label="角色" :label-width="formLabelWidth">-->
-<!--          <el-select v-model="form.roleName" placeholder="请选择用户组">-->
-<!--            <el-option label="买家" value="0">买家</el-option>-->
-<!--            <el-option label="卖家" value="1">卖家</el-option>-->
-<!--          </el-select>-->
-<!--        </el-form-item>-->
+        <el-form-item label="父级类别" :label-width="formLabelWidth">
+          <el-input v-model="form.parentName"  autocomplete="off"></el-input>
+                </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="cancel">取 消</el-button>
